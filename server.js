@@ -3,6 +3,7 @@ var bodyParser = require('body-parser')
 const {response} = require("express");
 const app = express();
 const puerto = process.env.PORT || 3000;
+"use strict"
 
 let categorias = [
     { id: 1, nombre: 'Cocina', descripcion: 'Cocina' },
@@ -31,6 +32,7 @@ app.get('/socios/v1/categorias', (req, res) => {
         mensaje:'Categorias obtenidas con exito'
         })
     }
+
 
 
     res.send('Obtener todas las categorias')
@@ -145,3 +147,144 @@ app.delete('/socios/v1/categorias/:id', (req, res) => {
 app.listen(puerto, () => {
     console.log(`Escuchando en el puerto ${puerto}`);
 })
+
+
+//Documentacion con swagger
+const swaggerUi = require('swagger-ui-express');
+const swaggerjsdoc = require('swagger-jsdoc');
+const swaggerOptions = { //Configuracion de swagger
+    swaggerDefinition: { //Definicion de swagger
+        info: { //Informacion de la API
+            title: 'API Categorias', //Titulo
+            version: '1.0.0', //Version
+            description: 'API Categorias' //Descripcion
+        },
+        host: 'localhost:3000', //Host
+        basePath: '/socios/v1', //Ruta base
+        produces: ['application/json'], //Tipo de contenido que produce
+        schemes: ['http', 'https'] //Protocolos que soporta
+    },  //Fin de la definicion de swagger
+    apis: ['./server.js'] //Rutas de los archivos que contienen las rutas
+} //Fin de la configuracion de swagger
+const swaggerDocs = swaggerjsdoc(swaggerOptions); //Genera la documentacion
+app.use('/socios/v1/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs)); //Utiliza la documentacion
+
+module.exports = app;
+
+//Documentacion con swagger
+/**
+ * @swagger
+ * /socios/v1/categorias:
+ *  get:
+ *    summary: Obtener todas las categorias
+ *    description: Obtener todas las categorias
+ *    responses:
+ *     200:
+ *      description: OK
+ *      content:
+ *       application/json:
+ *       schema:
+ *        type: object
+ *     500:
+ *      description: Error
+ *      content:
+ *       application/json:
+ *       schema:
+ *        type: object
+ */
+/**
+ * @swagger
+ * /socios/v1/categorias/{id}:
+ *  get:
+ *   summary: Obtener una categoria
+ *   description: Obtener una categoria
+ *   parameters:
+ *   - in: path
+ *     name: id
+ *     description: id de la categoria
+ *     required: true
+ *     schema:
+ *      type: integer
+ *      minimum: 1
+ *      maximum: 10
+ *
+ *     responses:
+ *       200:
+ *        description: OK
+ *        content:
+ *         application/json:
+ *
+ *
+ */
+/**
+ * @swagger
+ * /socios/v1/categorias:
+ *  post:
+ *   summary: Crear una categoria
+ *   description: Crear una categoria
+ *   parameters:
+ *   - in: body
+ *     name: body
+ *     description: Informacion de la categoria
+ *     required: true
+ *     schema:
+ *      type: object
+ *      required:
+ *      - nombre
+ *      - descripcion
+ *      properties:
+ *       nombre:
+ *        type: string
+ *       descripcion:
+ *        type: string
+ *
+ */
+/**
+ * @swagger
+ * /socios/v1/categorias/{id}:
+ *  put:
+ *   summary: Actualizar una categoria
+ *   description: Actualizar una categoria
+ *   parameters:
+ *   - in: path
+ *     name: id
+ *     description: id de la categoria
+ *     required: true
+ *     schema:
+ *      type: integer
+ *      minimum: 1
+ *      maximum: 10
+ *   - in: body
+ *     name: body
+ *     description: Informacion de la categoria
+ *     required: true
+ *     schema:
+ *      type: object
+ *      required:
+ *      - nombre
+ *      - descripcion
+ *      properties:
+ *       nombre:
+ *        type: string
+ *       descripcion:
+ *        type: string
+ *
+ */
+/**
+ * @swagger
+ * /socios/v1/categorias/{id}:
+ *  delete:
+ *  summary: Eliminar una categoria
+ *  description: Eliminar una categoria
+ *  parameters:
+ *  - in: path
+ *    name: id
+ *    description: id de la categoria
+ *    required: true
+ *    schema:
+ *     type: integer
+ *
+ *
+ *
+ *
+ */
